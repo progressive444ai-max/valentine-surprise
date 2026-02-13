@@ -2,7 +2,7 @@
 const cards = [
     { emoji: "🔥", text: "Мой огонь", subtext: "Моя мотивация и вдохновение" },
     { emoji: "🍑", text: "Моя жопка", subtext: "Самая красивая, между прочим" },
-    { emoji: "🌙", text: "Моя ночка", subtext: "С тобой даже бессонница — кайф" },
+    { emoji: "🌙", text: "Моя ночка", subtext: "С тобой даже бессонница это кайф" },
     { emoji: "👑", text: "Моя королева", subtext: "Которой я готов отдать все свои силы" },
     { emoji: "😴", text: "Мой сладкий сон", subtext: "От которого не хочу просыпаться" },
     { emoji: "☀️", text: "Моё солнце", subtext: "Освещаешь даже самые серые дни" },
@@ -40,17 +40,26 @@ function showScreen(id) {
 function initNoButton() {
     const btnNo = document.getElementById("btnNo");
     const btnYes = document.getElementById("btnYes");
+    let placeholderAdded = false;
 
     function dodgeNo() {
-        const rect = btnNo.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        // On first dodge, insert invisible placeholder so "Да" doesn't shift
+        if (!placeholderAdded) {
+            const rect = btnNo.getBoundingClientRect();
+            const placeholder = document.createElement("div");
+            placeholder.style.width = rect.width + "px";
+            placeholder.style.height = rect.height + "px";
+            placeholder.style.visibility = "hidden";
+            btnNo.parentNode.insertBefore(placeholder, btnNo);
+            placeholderAdded = true;
+        }
 
-        // Small dodge: 80-180px in random direction
+        // Jump away from cursor instantly (no transition)
+        const rect = btnNo.getBoundingClientRect();
         const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 100 + 80;
-        let newX = centerX + Math.cos(angle) * distance - rect.width / 2;
-        let newY = centerY + Math.sin(angle) * distance - rect.height / 2;
+        const distance = Math.random() * 120 + 100;
+        let newX = rect.left + Math.cos(angle) * distance;
+        let newY = rect.top + Math.sin(angle) * distance;
 
         // Keep within screen bounds
         const pad = 20;
@@ -61,12 +70,12 @@ function initNoButton() {
         btnNo.style.left = newX + "px";
         btnNo.style.top = newY + "px";
         btnNo.style.zIndex = "100";
-        btnNo.style.transition = "all 0.25s ease";
+        btnNo.style.transition = "none";
     }
 
-    // Mouse — always dodges
+    // Mouse — instant dodge
     btnNo.addEventListener("mouseenter", () => dodgeNo());
-    // Touch (mobile) — always dodges
+    // Touch (mobile)
     btnNo.addEventListener("touchstart", (e) => {
         e.preventDefault();
         dodgeNo();
@@ -233,27 +242,25 @@ function initGuessOptions() {
         if (!btn) return;
 
         const option = btn.dataset.option;
-        if (clickedOptions.has(option)) return; // already clicked
+        if (clickedOptions.has(option)) return;
 
         clickedOptions.add(option);
 
-        // Show "wrong" state
+        // Show wrong state — red background
         btn.style.background = "linear-gradient(135deg, #ff8a80, #ff5252)";
         btn.style.color = "white";
-        btn.style.transform = "scale(0.97)";
+        btn.style.border = "2px solid #ff5252";
+        btn.style.pointerEvents = "none";
 
-        // Add "Неправильно!" label
-        const wrong = document.createElement("span");
-        wrong.textContent = " — Неправильно! 😝";
-        wrong.style.fontSize = "0.75em";
-        btn.appendChild(wrong);
+        // Clear button text and show "Не угадал!"
+        btn.innerHTML = "❌ Не угадал!";
 
         // After all 4 clicked → go to troll screen
         if (clickedOptions.size >= 4) {
             setTimeout(() => {
                 showScreen("screen5");
                 launchFinalConfetti();
-            }, 800);
+            }, 1000);
         }
     });
 }

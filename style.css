@@ -137,12 +137,38 @@ body {
     box-shadow: 0 8px 40px rgba(233, 30, 99, 0.7);
 }
 
+.no-wrapper {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
 .btn-no {
-    background: #f5f5f5;
-    color: #999;
+    background: rgba(255, 255, 255, 0.35);
+    color: rgba(136, 14, 79, 0.4);
     font-size: 16px;
     padding: 14px 35px;
-    transition: all 0.15s ease;
+    transition: all 0.25s ease;
+    border: 1px dashed rgba(136, 14, 79, 0.2);
+}
+
+.btn-no:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: rgba(136, 14, 79, 0.6);
+}
+
+.no-hint {
+    font-size: 12px;
+    color: rgba(136, 14, 79, 0.35);
+    font-style: italic;
+    animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.7; }
 }
 
 /* ─── Screen 2: Cards ─── */

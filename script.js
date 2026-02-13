@@ -11,7 +11,8 @@ const cards = [
 ];
 
 let currentCard = 0;
-let noButtonSpeed = 1;
+let dodgeCount = 0;
+const MAX_DODGES = 4;
 
 // ─── Floating hearts ───
 function createFloatingHearts() {
@@ -41,49 +42,80 @@ function showScreen(id) {
 function initNoButton() {
     const btnNo = document.getElementById("btnNo");
     const btnYes = document.getElementById("btnYes");
+    const noWrapper = document.getElementById("noWrapper");
+    const noHint = document.getElementById("noHint");
 
     function dodgeNo() {
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const btnW = btnNo.offsetWidth;
-        const btnH = btnNo.offsetHeight;
+        if (dodgeCount >= MAX_DODGES) return;
 
-        // Random position within viewport
-        const maxX = vw - btnW - 20;
-        const maxY = vh - btnH - 20;
-        const newX = Math.random() * maxX + 10;
-        const newY = Math.random() * maxY + 10;
+        dodgeCount++;
 
-        btnNo.style.position = "fixed";
-        btnNo.style.left = newX + "px";
-        btnNo.style.top = newY + "px";
-        btnNo.style.zIndex = "100";
-        btnNo.style.transition = `all ${0.15 / noButtonSpeed}s ease`;
+        // Get button's current position
+        const rect = noWrapper.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
 
-        // Make Yes button bigger each time
-        noButtonSpeed = Math.min(noButtonSpeed + 0.2, 3);
-        const scale = 1 + (noButtonSpeed - 1) * 0.15;
-        btnYes.style.transform = `scale(${scale})`;
+        // Small dodge: 80-180px in random direction (not full screen)
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 100 + 80;
+        let newX = centerX + Math.cos(angle) * distance - rect.width / 2;
+        let newY = centerY + Math.sin(angle) * distance - rect.height / 2;
+
+        // Keep within screen bounds with padding
+        const pad = 20;
+        newX = Math.max(pad, Math.min(newX, window.innerWidth - rect.width - pad));
+        newY = Math.max(pad, Math.min(newY, window.innerHeight - rect.height - pad));
+
+        noWrapper.style.position = "fixed";
+        noWrapper.style.left = newX + "px";
+        noWrapper.style.top = newY + "px";
+        noWrapper.style.zIndex = "100";
+        noWrapper.style.transition = "all 0.25s ease";
+
+        // After max dodges, snap back and become clickable
+        if (dodgeCount >= MAX_DODGES) {
+            setTimeout(() => {
+                noWrapper.style.position = "relative";
+                noWrapper.style.left = "";
+                noWrapper.style.top = "";
+                noWrapper.style.transition = "all 0.5s ease";
+                noHint.textContent = "Ну ладно, нажимай 😏";
+                btnNo.style.background = "rgba(255,255,255,0.5)";
+                btnNo.style.color = "rgba(136, 14, 79, 0.6)";
+            }, 400);
+        }
     }
 
     // Mouse
-    btnNo.addEventListener("mouseenter", dodgeNo);
+    btnNo.addEventListener("mouseenter", () => {
+        if (dodgeCount < MAX_DODGES) dodgeNo();
+    });
     // Touch (mobile)
     btnNo.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        dodgeNo();
+        if (dodgeCount < MAX_DODGES) {
+            e.preventDefault();
+            dodgeNo();
+        }
     });
 
-    btnYes.addEventListener("click", () => {
-        // Heart explosion
-        for (let i = 0; i < 20; i++) {
-            setTimeout(() => createBurstHeart(), i * 50);
+    // Click "Нет" (after dodges are done) → still goes to cards
+    btnNo.addEventListener("click", () => {
+        if (dodgeCount >= MAX_DODGES) {
+            goToCards();
         }
-        setTimeout(() => {
-            showScreen("screen2");
-            initCards();
-        }, 600);
     });
+
+    btnYes.addEventListener("click", goToCards);
+}
+
+function goToCards() {
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => createBurstHeart(), i * 50);
+    }
+    setTimeout(() => {
+        showScreen("screen2");
+        initCards();
+    }, 600);
 }
 
 function createBurstHeart() {

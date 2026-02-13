@@ -11,8 +11,6 @@ const cards = [
 ];
 
 let currentCard = 0;
-let dodgeCount = 0;
-const MAX_DODGES = 4; // hint stops dodging after this many
 
 // ─── Floating hearts ───
 function createFloatingHearts() {
@@ -42,70 +40,38 @@ function showScreen(id) {
 function initNoButton() {
     const btnNo = document.getElementById("btnNo");
     const btnYes = document.getElementById("btnYes");
-    const noWrapper = document.getElementById("noWrapper");
-    const noHint = document.getElementById("noHint");
-
-    // Save original position for returning
-    let originalRect = null;
 
     function dodgeNo() {
-        // Save original position on first dodge
-        if (!originalRect) {
-            originalRect = noWrapper.getBoundingClientRect();
-        }
-
-        dodgeCount++;
-
-        // Get button's current position
-        const rect = noWrapper.getBoundingClientRect();
+        const rect = btnNo.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
 
-        // Small dodge: 80-180px in random direction (not full screen)
+        // Small dodge: 80-180px in random direction
         const angle = Math.random() * Math.PI * 2;
         const distance = Math.random() * 100 + 80;
         let newX = centerX + Math.cos(angle) * distance - rect.width / 2;
         let newY = centerY + Math.sin(angle) * distance - rect.height / 2;
 
-        // Keep within screen bounds with padding
+        // Keep within screen bounds
         const pad = 20;
         newX = Math.max(pad, Math.min(newX, window.innerWidth - rect.width - pad));
         newY = Math.max(pad, Math.min(newY, window.innerHeight - rect.height - pad));
 
-        noWrapper.style.position = "fixed";
-        noWrapper.style.left = newX + "px";
-        noWrapper.style.top = newY + "px";
-        noWrapper.style.zIndex = "100";
-        noWrapper.style.transition = "all 0.25s ease";
-
-        // After 4 dodges, return to original place (but still never clickable)
-        if (dodgeCount >= MAX_DODGES) {
-            setTimeout(() => {
-                noWrapper.style.position = "relative";
-                noWrapper.style.left = "";
-                noWrapper.style.top = "";
-                noWrapper.style.transition = "all 0.5s ease";
-                noHint.textContent = "Ну ладно, жми Да 😏";
-
-                // Reset dodge count so it can dodge again if they try
-                setTimeout(() => {
-                    dodgeCount = 0;
-                }, 600);
-            }, 400);
-        }
+        btnNo.style.position = "fixed";
+        btnNo.style.left = newX + "px";
+        btnNo.style.top = newY + "px";
+        btnNo.style.zIndex = "100";
+        btnNo.style.transition = "all 0.25s ease";
     }
 
-    // Mouse — always dodges, never stops
-    btnNo.addEventListener("mouseenter", () => {
-        dodgeNo();
-    });
+    // Mouse — always dodges
+    btnNo.addEventListener("mouseenter", () => dodgeNo());
     // Touch (mobile) — always dodges
     btnNo.addEventListener("touchstart", (e) => {
         e.preventDefault();
         dodgeNo();
     });
-
-    // "Нет" is NEVER clickable — clicking does nothing
+    // Click does nothing
     btnNo.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();

@@ -3,8 +3,8 @@ const cards = [
     { emoji: "🔥", text: "Мой огонь", subtext: "Моя мотивация и вдохновение" },
     { emoji: "🍑", text: "Моя жопка", subtext: "Самая красивая, между прочим" },
     { emoji: "🌙", text: "Моя ночка", subtext: "С тобой даже бессонница — кайф" },
-    { emoji: "👑", text: "Моя королева", subtext: "Которой я готов отдать всё" },
-    { emoji: "🏠", text: "Мой дом", subtext: "Там, где ты — там мой дом" },
+    { emoji: "👑", text: "Моя королева", subtext: "Которой я готов отдать все свои силы" },
+    { emoji: "😴", text: "Мой сладкий сон", subtext: "От которого не хочу просыпаться" },
     { emoji: "☀️", text: "Моё солнце", subtext: "Освещаешь даже самые серые дни" },
     { emoji: "💎", text: "Моё сокровище", subtext: "Бесценное и единственное" },
     { emoji: "🤪", text: "Моя сумасшедшая", subtext: "С которой никогда не скучно" },
@@ -226,19 +226,35 @@ function launchConfetti() {
 
 // ─── Screen 4: Guess options ───
 function initGuessOptions() {
+    const clickedOptions = new Set();
+
     document.getElementById("guessOptions").addEventListener("click", (e) => {
         const btn = e.target.closest(".btn-option");
         if (!btn) return;
 
-        // Highlight selected
-        btn.style.background = "linear-gradient(135deg, #e91e63, #c2185b)";
-        btn.style.color = "white";
+        const option = btn.dataset.option;
+        if (clickedOptions.has(option)) return; // already clicked
 
-        setTimeout(() => {
-            showScreen("screen5");
-            // Final confetti
-            launchFinalConfetti();
-        }, 500);
+        clickedOptions.add(option);
+
+        // Show "wrong" state
+        btn.style.background = "linear-gradient(135deg, #ff8a80, #ff5252)";
+        btn.style.color = "white";
+        btn.style.transform = "scale(0.97)";
+
+        // Add "Неправильно!" label
+        const wrong = document.createElement("span");
+        wrong.textContent = " — Неправильно! 😝";
+        wrong.style.fontSize = "0.75em";
+        btn.appendChild(wrong);
+
+        // After all 4 clicked → go to troll screen
+        if (clickedOptions.size >= 4) {
+            setTimeout(() => {
+                showScreen("screen5");
+                launchFinalConfetti();
+            }, 800);
+        }
     });
 }
 

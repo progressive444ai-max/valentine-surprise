@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14 февраля</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Bad+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <!-- SCREEN 1: Main question -->
+    <section class="screen active" id="screen1">
+        <div class="content">
+            <div class="big-heart-pulse">&#10084;&#65039;</div>
+            <h1 class="title">Будешь моей<br>валентинкой?</h1>
+            <div class="buttons">
+                <button class="btn btn-yes" id="btnYes">Да!</button>
+                <button class="btn btn-no" id="btnNo">Нет</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCREEN 2: Cards carousel -->
+    <section class="screen" id="screen2">
+        <div class="content">
+            <h2 class="subtitle">Ты для меня...</h2>
+            <div class="cards-container" id="cardsContainer">
+                <!-- Cards injected by JS -->
+            </div>
+            <div class="cards-dots" id="cardsDots"></div>
+            <button class="btn btn-next" id="btnNext">&#10084;&#65039; Дальше</button>
+        </div>
+    </section>
+
+    <!-- SCREEN 3: Greeting -->
+    <section class="screen" id="screen3">
+        <div class="content">
+            <div class="confetti-container" id="confetti"></div>
+            <h1 class="greeting-title">&#127801; С Днём Святого Валентина! &#127801;</h1>
+            <p class="greeting-text">
+                Ты — лучшее, что случилось в моей жизни.<br>
+                Каждый день с тобой — подарок.
+            </p>
+            <div class="gift-box" id="giftBox">&#127873;</div>
+            <p class="gift-hint">
+                Кстати... Тебе нужно <b>сходить на почту</b> &#128230;<br>
+                <span class="hint-small">Там кое-что ждёт тебя...</span>
+            </p>
+            <button class="btn btn-guess" id="btnGuess">Угадать что за подарок? &#129300;</button>
+        </div>
+    </section>
+
+    <!-- SCREEN 4: Guess the gift -->
+    <section class="screen" id="screen4">
+        <div class="content">
+            <h2 class="subtitle">Что в посылке? &#127873;</h2>
+            <p class="guess-text">Выбери вариант:</p>
+            <div class="guess-options" id="guessOptions">
+                <button class="btn btn-option" data-option="1">&#128144; Букет цветов</button>
+                <button class="btn btn-option" data-option="2">&#127855; Коробка конфет</button>
+                <button class="btn btn-option" data-option="3">&#128141; Украшение</button>
+                <button class="btn btn-option" data-option="4">&#129505; Что-то особенное</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCREEN 5: Troll reveal -->
+    <section class="screen" id="screen5">
+        <div class="content">
+            <div class="troll-emoji">&#128514;</div>
+            <h1 class="troll-title">Хахахаха</h1>
+            <p class="troll-text">
+                Ты серьёзно думала,<br>
+                что я тебе скажу?
+            </p>
+            <p class="troll-text2">
+                Ты меня вроде давно знаешь...<br>
+                А опять повелась! &#128523;
+            </p>
+            <div class="troll-heart">&#10084;&#65039;</div>
+            <p class="troll-final">
+                Иди на почту и узнаешь &#128536;<br>
+                <span class="hint-small">Люблю тебя &#10084;&#65039;</span>
+            </p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

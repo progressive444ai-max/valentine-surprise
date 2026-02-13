@@ -146,29 +146,31 @@ body {
 }
 
 .btn-no {
-    background: rgba(255, 255, 255, 0.35);
-    color: rgba(136, 14, 79, 0.4);
-    font-size: 16px;
-    padding: 14px 35px;
+    background: linear-gradient(135deg, #f48fb1, #e91e63);
+    color: white;
+    font-size: 20px;
+    padding: 18px 45px;
     transition: all 0.25s ease;
-    border: 1px dashed rgba(136, 14, 79, 0.2);
+    border: none;
+    box-shadow: 0 4px 20px rgba(233, 30, 99, 0.35);
 }
 
 .btn-no:hover {
-    background: rgba(255, 255, 255, 0.5);
-    color: rgba(136, 14, 79, 0.6);
+    box-shadow: 0 6px 30px rgba(233, 30, 99, 0.5);
 }
 
 .no-hint {
-    font-size: 12px;
-    color: rgba(136, 14, 79, 0.35);
+    font-size: 15px;
+    color: #e91e63;
+    font-weight: 600;
     font-style: italic;
-    animation: hintPulse 2s ease-in-out infinite;
+    text-shadow: 0 0 10px rgba(233, 30, 99, 0.5), 0 0 20px rgba(233, 30, 99, 0.3);
+    animation: hintGlow 2s ease-in-out infinite;
 }
 
-@keyframes hintPulse {
-    0%, 100% { opacity: 0.35; }
-    50% { opacity: 0.7; }
+@keyframes hintGlow {
+    0%, 100% { opacity: 0.8; text-shadow: 0 0 10px rgba(233, 30, 99, 0.5), 0 0 20px rgba(233, 30, 99, 0.3); }
+    50% { opacity: 1; text-shadow: 0 0 15px rgba(233, 30, 99, 0.8), 0 0 30px rgba(233, 30, 99, 0.5), 0 0 45px rgba(233, 30, 99, 0.2); }
 }
 
 /* ─── Screen 2: Cards ─── */
@@ -494,6 +496,10 @@ body {
     .btn-yes {
         font-size: 22px;
         padding: 18px 50px;
+    }
+    .btn-no {
+        font-size: 16px;
+        padding: 14px 35px;
     }
     .troll-title {
         font-size: 38px;

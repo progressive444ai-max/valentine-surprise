@@ -12,7 +12,7 @@ const cards = [
 
 let currentCard = 0;
 let dodgeCount = 0;
-const MAX_DODGES = 4;
+const MAX_DODGES = 4; // hint stops dodging after this many
 
 // ─── Floating hearts ───
 function createFloatingHearts() {
@@ -45,8 +45,14 @@ function initNoButton() {
     const noWrapper = document.getElementById("noWrapper");
     const noHint = document.getElementById("noHint");
 
+    // Save original position for returning
+    let originalRect = null;
+
     function dodgeNo() {
-        if (dodgeCount >= MAX_DODGES) return;
+        // Save original position on first dodge
+        if (!originalRect) {
+            originalRect = noWrapper.getBoundingClientRect();
+        }
 
         dodgeCount++;
 
@@ -72,37 +78,37 @@ function initNoButton() {
         noWrapper.style.zIndex = "100";
         noWrapper.style.transition = "all 0.25s ease";
 
-        // After max dodges, snap back and become clickable
+        // After 4 dodges, return to original place (but still never clickable)
         if (dodgeCount >= MAX_DODGES) {
             setTimeout(() => {
                 noWrapper.style.position = "relative";
                 noWrapper.style.left = "";
                 noWrapper.style.top = "";
                 noWrapper.style.transition = "all 0.5s ease";
-                noHint.textContent = "Ну ладно, нажимай 😏";
-                btnNo.style.background = "rgba(255,255,255,0.5)";
-                btnNo.style.color = "rgba(136, 14, 79, 0.6)";
+                noHint.textContent = "Ну ладно, жми Да 😏";
+
+                // Reset dodge count so it can dodge again if they try
+                setTimeout(() => {
+                    dodgeCount = 0;
+                }, 600);
             }, 400);
         }
     }
 
-    // Mouse
+    // Mouse — always dodges, never stops
     btnNo.addEventListener("mouseenter", () => {
-        if (dodgeCount < MAX_DODGES) dodgeNo();
+        dodgeNo();
     });
-    // Touch (mobile)
+    // Touch (mobile) — always dodges
     btnNo.addEventListener("touchstart", (e) => {
-        if (dodgeCount < MAX_DODGES) {
-            e.preventDefault();
-            dodgeNo();
-        }
+        e.preventDefault();
+        dodgeNo();
     });
 
-    // Click "Нет" (after dodges are done) → still goes to cards
-    btnNo.addEventListener("click", () => {
-        if (dodgeCount >= MAX_DODGES) {
-            goToCards();
-        }
+    // "Нет" is NEVER clickable — clicking does nothing
+    btnNo.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     btnYes.addEventListener("click", goToCards);

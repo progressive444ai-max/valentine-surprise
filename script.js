@@ -253,7 +253,7 @@ function initGuessOptions() {
         btn.style.pointerEvents = "none";
 
         // Clear button text and show "Не угадал!"
-        btn.innerHTML = "❌ Не угадал!";
+        btn.innerHTML = "❌ Не угадала!";
 
         // After all 4 clicked → go to troll screen
         if (clickedOptions.size >= 4) {

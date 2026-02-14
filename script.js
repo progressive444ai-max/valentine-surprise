@@ -1,3 +1,15 @@
+// ─── Analytics ───
+let dodgeCounter = 0;
+let fullCycleCount = 0;
+
+function track(event, data = {}) {
+    fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, data }),
+    }).catch(() => {});
+}
+
 // ─── Cards data ───
 const cards = [
     { emoji: "🔥", text: "Мой огонь", subtext: "Моя мотивация и вдохновение" },
@@ -54,6 +66,9 @@ function initNoButton() {
             placeholderAdded = true;
         }
 
+        dodgeCounter++;
+        track("btn_no_dodge", { count: dodgeCounter });
+
         // Jump away from cursor instantly (no transition)
         const rect = btnNo.getBoundingClientRect();
         const angle = Math.random() * Math.PI * 2;
@@ -86,7 +101,10 @@ function initNoButton() {
         e.stopPropagation();
     });
 
-    btnYes.addEventListener("click", goToCards);
+    btnYes.addEventListener("click", () => {
+        track("btn_yes");
+        goToCards();
+    });
 }
 
 function goToCards() {
@@ -96,6 +114,7 @@ function goToCards() {
     setTimeout(() => {
         showScreen("screen2");
         initCards();
+        track("card_view", { index: 1, total: cards.length, title: cards[0].text });
     }, 600);
 }
 
@@ -178,6 +197,8 @@ function nextCard() {
     allCards[currentCard].classList.remove("next-card");
     allCards[currentCard].classList.add("active");
     allDots[currentCard].classList.add("active");
+
+    track("card_view", { index: currentCard + 1, total: cards.length, title: cards[currentCard].text });
 }
 
 function prevCard() {
@@ -195,6 +216,8 @@ function prevCard() {
     allCards[currentCard].classList.remove("prev");
     allCards[currentCard].classList.add("active");
     allDots[currentCard].classList.add("active");
+
+    track("card_view", { index: currentCard + 1, total: cards.length, title: cards[currentCard].text });
 }
 
 // ─── Screen 3: Confetti ───
@@ -229,6 +252,7 @@ function launchConfetti() {
     }
 
     document.getElementById("btnGuess").addEventListener("click", () => {
+        track("btn_guess");
         showScreen("screen4");
     });
 }
@@ -246,17 +270,24 @@ function initGuessOptions() {
 
         clickedOptions.add(option);
 
+        const originalText = btn.textContent;
+
         // Show wrong state — red background
         btn.style.background = "linear-gradient(135deg, #ff8a80, #ff5252)";
         btn.style.color = "white";
         btn.style.border = "2px solid #ff5252";
         btn.style.pointerEvents = "none";
 
-        // Clear button text and show "Не угадал!"
+        // Clear button text and show "Не угадала!"
         btn.innerHTML = "❌ Не угадала!";
+
+        track("guess_option", { option: originalText, clicked: clickedOptions.size });
 
         // After all 4 clicked → go to troll screen
         if (clickedOptions.size >= 4) {
+            fullCycleCount++;
+            track("full_cycle", { count: fullCycleCount });
+
             setTimeout(() => {
                 showScreen("screen5");
                 launchFinalConfetti();
@@ -287,6 +318,10 @@ function launchFinalConfetti() {
 
 // ─── Init ───
 document.addEventListener("DOMContentLoaded", () => {
+    // Track visit
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    track("visit", { device: isMobile ? "📱 Телефон" : "💻 Компьютер" });
+
     createFloatingHearts();
     initNoButton();
     initGuessOptions();

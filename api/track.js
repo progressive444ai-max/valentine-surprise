@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
         switch (event) {
             case "visit":
-                message = `🟢 <b>Новый визит!</b>\n📱 ${data.device}\n🕐 ${time}`;
+                message = `🟢 <b>Новый визит!</b>\n📱 ${data.device}\n🌐 ${data.browser}\n🕐 ${time}`;
                 break;
             case "btn_yes":
                 message = `💖 Нажата кнопка <b>"Да!"</b>\n🕐 ${time}`;

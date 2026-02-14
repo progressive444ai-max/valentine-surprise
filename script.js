@@ -318,9 +318,24 @@ function launchFinalConfetti() {
 
 // ─── Init ───
 document.addEventListener("DOMContentLoaded", () => {
-    // Track visit
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    track("visit", { device: isMobile ? "📱 Телефон" : "💻 Компьютер" });
+    // Track visit with detailed device info
+    const ua = navigator.userAgent;
+    let device = "💻 Компьютер";
+    if (/iPhone|iPad|iPod/i.test(ua)) device = "🍎 iPhone/iPad";
+    else if (/Android/i.test(ua)) device = "🤖 Android";
+    else if (/Mac/i.test(ua)) device = "🍎 Mac";
+    else if (/Windows/i.test(ua)) device = "🪟 Windows";
+    else if (/Linux/i.test(ua)) device = "🐧 Linux";
+
+    // Browser
+    let browser = "Другой";
+    if (/Chrome/i.test(ua) && !/Edge/i.test(ua)) browser = "Chrome";
+    else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = "Safari";
+    else if (/Firefox/i.test(ua)) browser = "Firefox";
+    else if (/Edge/i.test(ua)) browser = "Edge";
+    else if (/Opera|OPR/i.test(ua)) browser = "Opera";
+
+    track("visit", { device, browser });
 
     createFloatingHearts();
     initNoButton();
